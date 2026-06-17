@@ -1,0 +1,21 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: food-order-mysql
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-passw@rd}
+      MYSQL_DATABASE: ${DB_NAME:-food_order_db}
+    volumes:
+      - food_order_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${DB_PASSWORD:-passw@rd}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+volumes:
+  food_order_mysql_data:

@@ -60,27 +60,59 @@ A small **Spring Boot** service that demonstrates **hexagonal architecture** (po
 
 - **JDK 21**
 - **Maven 3.9+**
-- **Docker** (for local MySQL)
+- **Docker Desktop** installed and **running** (for local MySQL)
 
-## Quick start
+## Run locally
 
-### 1. Start MySQL
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/SrinathRayabarapu/hexagonal-architecture-food-service.git
+cd hexagonal-architecture-food-service
+```
+
+### 2. (Optional) Configure environment
+
+Defaults work without extra setup. To override database or port settings:
+
+```bash
+cp env.example .env
+# edit .env if needed
+```
+
+### 3. Start MySQL
+
+From the project root:
 
 ```bash
 docker compose up -d
 ```
 
-This starts MySQL on port `3306` with database `food_order_db`. Defaults match `env.example`.
+Wait until the container is healthy:
 
-### 2. Run the application
+```bash
+docker compose ps
+```
+
+Expected: container `food-order-mysql` is **Up (healthy)** on port **3306**, database **`food_order_db`**.
+
+If port `3306` is already in use, stop the conflicting container first:
+
+```bash
+docker ps --filter publish=3306
+docker stop <container-name>
+docker compose up -d
+```
+
+### 4. Run the application
 
 ```bash
 mvn spring-boot:run
 ```
 
-The API listens on **http://localhost:9191**.
+App URL: **http://localhost:9191**
 
-### 3. Try the API
+### 5. Try the API
 
 **Place an order**
 
@@ -101,10 +133,25 @@ curl -X POST http://localhost:9191/orders \
 curl http://localhost:9191/orders/track/order-1
 ```
 
-### 4. OpenAPI / Swagger UI
+Expected response: `Status: ORDER PLACED`
+
+### 6. OpenAPI / Swagger UI
 
 - Swagger UI: http://localhost:9191/swagger-ui.html
 - OpenAPI JSON: http://localhost:9191/api-docs
+
+### Stop local services
+
+```bash
+# Stop the Spring Boot app with Ctrl+C, then:
+docker compose down
+```
+
+To remove the database volume as well:
+
+```bash
+docker compose down -v
+```
 
 ## Configuration
 
